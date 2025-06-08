@@ -1,0 +1,146 @@
+# Standard .gitignore template
+
+### Operating System Files ###
+.DS_Store
+.DS_Store?
+*.swp
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+### IDE/Specific Editor Files ###
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.settings/
+.project
+.classpath
+*.pydevproject
+
+# NetBeans
+nbproject/
+*.orig
+
+### Language Specific ###
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# C/C++
+*.o
+*.ko
+*.obj
+*.so
+*.dylib
+*.dll
+*.exe
+
+### Dependency directories ###
+bower_components/
+jspm_packages/
+
+### Logs and databases ###
+*.log
+*.sql
+*.sqlite
+*.db
+
+### Environment files ###
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.venv
+venv/
+
+### Build output ###
+dist/
+build/
+out/
+target/
+bin/
+*.msi
+*.exe
+
+### Documentation ###
+docs/_build/
+
+### System Files ###
+*.bak
+*.tmp
+*.temp
+
+### Secrets ###
+*.key
+*.pem
+*.cert
+*.pub
+*.secret
+credentials.json
+secrets.ini
+
+### Project Specific ###
+# Custom project files/directories
+*.swp
+*.swo
+*.dump
+*.pid
+*.seed
+*.pid.lock
+
+# Large media files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
