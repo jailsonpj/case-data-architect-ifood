@@ -41,9 +41,23 @@ Contém todo o código fonte do projeto, organizado em subdiretórios por funcio
   - Centraliza operações comuns de I/O
 
 ### 2. Estrutura do Data Lake
-- `raw/`: Dados brutos da fonte
-- `transformed/`: Dados processados
-- `enriched/`: Dados prontos para análise
+
+![Arquitetura Data Lake](./ifood-case/src/images/arquitetura_datalake_teste_ifood.png)
+
+- RAW (S3 Bucket):
+    - Dados brutos originais da TLC 
+    - Formato preservado como recebido
+    - Particionamento por ano/mês/tipo
+
+- TRANSFORMED (S3 Bucket):
+    - Dados processados com Databricks
+    - Schema validado e padronizado
+    - Limpeza e enriquecimento inicial
+
+- ENRICHED (S3 Bucket):
+    - Dados prontos para análise
+    - Agregações e métricas calculadas
+    - Otimizados para consulta SQL
 
 ### 3. Arquivos de Configuração
 - **.gitignore**: Lista de arquivos a serem ignorados pelo Git
