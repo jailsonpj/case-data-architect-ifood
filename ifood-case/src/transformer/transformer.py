@@ -149,11 +149,14 @@ class TransformedTLCData:
             - Aplica todas as transformações da pipeline
         """
         for month in range(1, months + 1):
-            path = self.path_mount_raw + f"{color}_taxi/year=2023/month=0{month}"
+            path = self.path_mount_raw + f"{color}_taxi/2023/{month}"
             df = read_files_parquet(file_input=path)
             df = self.convert_types_data(df)
             df = self.standardize_column_names(df=df)
             df = self.create_columns_date(df=df, column="tpep_dropoff_datetime")
 
             df = df.filter(F.col("year") == 2023)
-            save_file_parquet(df, self.path_mount_transformed + f'{color}_taxi')
+            self.save_file_parquet(
+                df, 
+                self.path_mount_transformed + f'{color}_taxi/2023/{month}'
+            )

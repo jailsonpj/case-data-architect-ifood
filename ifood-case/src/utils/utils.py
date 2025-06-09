@@ -41,6 +41,5 @@ def save_file_parquet(df, output_path):
     (
         df.write
         .mode("overwrite")
-        .partitionBy("year", "month")
         .parquet(output_path)
     )

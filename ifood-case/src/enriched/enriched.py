@@ -47,12 +47,12 @@ class EnrichedTLCData:
         ]
 
         for month in range(1, months + 1):
-            path = self.path_mount_transformed + f"{color}_taxi/year=2023/month=0{month}"
+            path = self.path_mount_transformed + f"{color}_taxi/2023/*"
             df = read_files_parquet(file_input=path)
             
             df = df.select(*columns_select)
             
             save_file_parquet(
                 df, 
-                self.path_mount_transformed + f'{color}_taxi/{enriched_type}'
+                self.path_mount_enriched + f'{color}_taxi/{enriched_type}/taxi_trip'
             )

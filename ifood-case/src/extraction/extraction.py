@@ -60,7 +60,7 @@ class ExtractionTLCData:
                         tmp_file.write(chunk)
                 tmp_file.seek(0)
                 
-                s3_key = f"{taxi}_taxi/year={year}/month={month:02d}/{file_name}"
+                s3_key = f"{taxi}_taxi/{year}/{month}/{file_name}"
                 print(f"Uploading to s3://{self.s3_bucket}/{s3_key}")
                 
                 s3 = boto3.client(
