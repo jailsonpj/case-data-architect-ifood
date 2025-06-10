@@ -3,7 +3,7 @@
 ## Visão Geral
 Este repositório contém um projeto de arquitetura de dados para um case do iFood, organizado em uma estrutura clara que segue boas práticas de engenharia de dados. O projeto utiliza PySpark para processamento de dados e está estruturado em camadas distintas.
 
-## Estrutura de Arquivos
+## 1. Estrutura de Arquivos
 
 ### 1. Diretório `src/`
 Contém todo o código fonte do projeto, organizado em subdiretórios por funcionalidade.
@@ -39,6 +39,11 @@ Contém todo o código fonte do projeto, organizado em subdiretórios por funcio
     - Leitura de arquivos Parquet (`read_files_parquet`)
     - Escrita de arquivos Parquet (`save_file_parquet`)
   - Centraliza operações comuns de I/O
+
+#### 1.5 `authentication/`
+- **authentication.py**: Classe para autenticacao com S3 Bucket
+  - Class `AuthenticationS3`.
+
 ---
 ## 2. Estrutura do Data Lake
 
@@ -92,12 +97,39 @@ O fluxo de execução da pipeline de dados é linear e segue três etapas sequen
 
 ---
 
-## 4. Sugestões de Melhoria
-1. Adicionar tratamento de erros mais robusto
-2. Implementar logging consistente
-3. Adicionar testes unitários
-4. Documentar requisitos/dependências
-5. Configurar CI/CD para execução automatizada
+## 4. Sugestão de Melhoria
+1. Modelagem Dimensional
+A modelagem dimensional dos dados do TLC Trip Record Data, conforme apresentada no esquema, segue a abordagem de Data Warehouse dimensional (estrela), o que traz várias vantagens para análise e criação de visualizações:
+
+![Proposta de Modelagem Dimensional](./ifood-case/src/images/ifood_case_dimensional_data.png)
+
+### **Vantagens da Modelagem Dimensional para Análise e Visualização**  
+
+1. **Performance Otimizada**  
+   - Consultas mais rápidas devido a joins simplificados entre fatos e dimensões.  
+   - Agregações eficientes (ex.: total de corridas por mês).  
+
+2. **Análise Temporal Facilitada**  
+   - Filtros intuitivos por data, hora, dia da semana, etc.  
+   - Drill-down natural (ex.: ano → mês → dia).  
+
+3. **Visualizações Mais Ricas**  
+   - Rótulos descritivos (ex.: "Cartão de Crédito" em vez de códigos).  
+   - Hierarquias prontas para dashboards (ex.: tempo, localização).  
+
+4. **Métricas Consistentes**  
+   - KPIs calculados a partir de uma única fonte (tabela de fatos).  
+   - Evita duplicação ou divergência em relatórios.  
+
+5. **Flexibilidade Analítica**  
+   - Combinações dinâmicas (ex.: "Viagens por tipo de pagamento × período do dia").  
+   - Filtros cruzados (ex.: corridas noturnas pagas em dinheiro).  
+
+6. **Dados Organizados e Confiáveis**  
+   - Chaves substitutas garantem integridade (ex.: atualizações não quebram relatórios).  
+   - Estrutura padronizada para escalabilidade.  
+
+---
 
 ## 5. Como Executar
 1. Instalar dependências: `pip install pyspark boto3 requests`
@@ -108,3 +140,14 @@ O fluxo de execução da pipeline de dados é linear e segue três etapas sequen
    python src/transformation/transformation.py
    python src/enriched/enriched.py
    ```
+  ```text
+  Nota: O código de extração, tranformação e enriquecimento já foram previamente executados para disponibilizar os dados para consumo
+  ```
+
+#### Configurando Ambiente para Consumo de Dados
+Para consumir os dados através do Databricks, é necessário fazer a execuçao do condigo do `config.py` para montar os caminhos do S3 Bucket no Databricks. A partir disso os dados podem ser consumidos. 
+
+1. Execução:
+```bash
+python config.py
+```
