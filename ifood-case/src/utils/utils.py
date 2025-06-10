@@ -1,4 +1,11 @@
+import logging
 from pyspark.sql import SparkSession
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 spark = SparkSession.builder.appName("UtildSpark").getOrCreate()
 
@@ -17,8 +24,14 @@ def read_files_parquet(file_input):
         >>> df = read_files_parquet("hdfs://path/to/file.parquet")
         >>> df.show()
     """
-    df = spark.read.parquet(file_input)
-    return df
+    try:
+        logger.info(f"Iniciando leitura do arquivo Parquet: {file_input}")
+        df = spark.read.parquet(file_input)
+        logger.info(f"Leitura concluída com sucesso. Total de linhas: {df.count()}")
+        return df
+    except Exception as e:
+        logger.error(f"Erro ao ler arquivo Parquet {file_input}: {str(e)}")
+        raise
 
 
 def save_file_parquet(df, output_path):
@@ -38,8 +51,18 @@ def save_file_parquet(df, output_path):
         >>> df = spark.createDataFrame([...])
         >>> save_file_parquet(df, "s3://bucket/output/path")
     """
-    (
-        df.write
-        .mode("overwrite")
-        .parquet(output_path)
-    )
+    try:
+        logger.info(f"Iniciando salvamento do DataFrame em: {output_path}")
+        logger.info(f"Schema do DataFrame: {df.schema.json()}")
+        logger.info(f"Contagem de linhas: {df.count()}")
+        
+        (
+            df.write
+            .mode("overwrite")
+            .parquet(output_path)
+        )
+        
+        logger.info(f"DataFrame salvo com sucesso em: {output_path}")
+    except Exception as e:
+        logger.error(f"Erro ao salvar DataFrame em {output_path}: {str(e)}")
+        raise
