@@ -172,3 +172,13 @@ source_url_enriched = "s3a://%s:%s@%s" %(access_key, encoded_secret, aws_s3_buck
 ```
 
 A partir disso os dados podem ser consumidos pelo Databricks.
+
+---
+
+## Análises - Resposta as perguntas
+As análises feitas foram desenvolvidas para responders duas perguntas:
+
+1. Qual a média de valor total (total_amount) recebido em um mês considerando todos os yellow táxis da frota?
+2. Qual a média de passageiros (passenger\_count) por cada hora do dia que pegaram táxi no mês de maio considerando todos os táxis da frota?
+
+O resultado para as perguntas estão no diretorio `analysis/`, no arquivo `perguntas.ipynb`.
