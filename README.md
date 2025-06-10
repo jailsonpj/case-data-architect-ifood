@@ -39,8 +39,8 @@ Contém todo o código fonte do projeto, organizado em subdiretórios por funcio
     - Leitura de arquivos Parquet (`read_files_parquet`)
     - Escrita de arquivos Parquet (`save_file_parquet`)
   - Centraliza operações comuns de I/O
-
-### 2. Estrutura do Data Lake
+---
+## 2. Estrutura do Data Lake
 
 ![Arquitetura Data Lake](./ifood-case/src/images/arquitetura_datalake_teste_ifood.png)
 
@@ -59,35 +59,47 @@ Contém todo o código fonte do projeto, organizado em subdiretórios por funcio
     - Agregações e métricas calculadas
     - Otimizados para consulta SQL
 
-### 3. Arquivos de Configuração
-- **.gitignore**: Lista de arquivos a serem ignorados pelo Git
-  - Inclui padrões para:
-    - Arquivos de IDE (.vscode, .idea)
-    - Cache Python (__pycache__)
-    - Arquivos temporários
-    - Credenciais/arquivos sensíveis
+---
 
-## Fluxo de Processamento
+## 3. Fluxo de Processamento
+
+![Fluxo Pipeline de Dados](./ifood-case/src/images/fluxo_pipeline_ifood.excalidraw.png)
+
+O fluxo de execução da pipeline de dados é linear e segue três etapas sequenciais, representadas da esquerda para a direita:
+
+1. **EXTRAÇÃO**:  
+   - **Objetivo**: Coletar dados brutos de fontes diversas (bancos de dados, APIs, logs, etc.).  
+   - **Saída**: Dados são armazenados na camada **RAW**, sem modificações, preservando a forma original.  
+
+2. **TRANSFORMAÇÃO**:  
+   - **Objetivo**: Processar os dados brutos (limpeza, filtragem, estruturação, normalização).  
+   - **Saída**: Dados são movidos para a camada **TRANSFORMED**.  
+
+3. **ENRIQUECIMENTO**:  
+   - **Objetivo**: Adicionar valor aos dados (agregações, cálculos, integração com outras fontes).  
+   - **Saída**: Dados são armazenados na camada **ENRICHED** (enriquecidos), prontos para consumo final (relatórios, ML, etc.).  
+
+### **Características do Fluxo**:  
+- **Sequencial**: Cada etapa depende da saída da anterior.  
+- **Camadas de Armazenamento**: Cada fase tem uma camada dedicada (RAW → TRANSFORMED → ENRICHED).  
+- **Contexto**: Executado em um **Data Lake**, que armazena os dados em todas as etapas.
+
+### **Códigos da Pipeline**
 1. **Extração**: `extraction.py` baixa dados de táxi NYC
 2. **Transformação**: `transformation.py` limpa e estrutura os dados
 3. **Enriquecimento**: `enriched.py` prepara para análise
 4. **Utils**: Funções compartilhadas suportam todos os passos
 
-## Boas Práticas Implementadas
-1. Separação clara de responsabilidades
-2. Padronização de nomes (snake_case)
-3. Particionamento de dados por ano/mês
-4. Tratamento de tipos de dados
-5. Documentação de classes e métodos
+---
 
-## Sugestões de Melhoria
+## 4. Sugestões de Melhoria
 1. Adicionar tratamento de erros mais robusto
 2. Implementar logging consistente
 3. Adicionar testes unitários
 4. Documentar requisitos/dependências
 5. Configurar CI/CD para execução automatizada
 
-## Como Executar
+## 5. Como Executar
 1. Instalar dependências: `pip install pyspark boto3 requests`
 2. Configurar credenciais AWS (como variáveis de ambiente)
 3. Executar scripts na ordem:
