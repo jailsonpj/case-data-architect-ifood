@@ -147,7 +147,28 @@ A modelagem dimensional dos dados do TLC Trip Record Data, conforme apresentada 
 #### Configurando Ambiente para Consumo de Dados
 Para consumir os dados através do Databricks, é necessário fazer a execuçao do condigo do `config.py` para montar os caminhos do S3 Bucket no Databricks. A partir disso os dados podem ser consumidos. 
 
-1. Execução:
+1. Execução para montar os caminhos do S3 Bucket:
 ```bash
-python config.py
+from authentication.authentication import AuthenticationS3
+import urllib
+
+auth = eval(AuthenticationS3.get_secret_value())
+
+access_key = auth["user-dl-case-ifood"]
+secret_key = auth["secret-dl-case-ifood"]
+encoded_secret = urllib.parse.quote(string=secret_key, safe="")
+
+aws_s3_bucket_raw = "raw-tlc-trip-data-case-ifood"
+mount_name_raw = "/mnt/mount_raw"
+source_url_raw = "s3a://%s:%s@%s" %(access_key, encoded_secret, aws_s3_bucket_raw)
+
+aws_s3_bucket_transformed = "transformed-tlc-trip-data-case-ifood"
+mount_name_transformed = "/mnt/mount_transformed"
+source_url_transformed = "s3a://%s:%s@%s" %(access_key, encoded_secret, aws_s3_bucket_transformed)
+
+aws_s3_bucket_enriched = "enriched-tlc-trip-data-case-ifood"
+mount_name_enriched = "/mnt/mount_enriched"
+source_url_enriched = "s3a://%s:%s@%s" %(access_key, encoded_secret, aws_s3_bucket_enriched)
 ```
+
+A partir disso os dados podem ser consumidos pelo Databricks.
