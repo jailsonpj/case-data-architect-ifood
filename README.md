@@ -73,7 +73,7 @@ Contém todo o código fonte do projeto, organizado em subdiretórios por funcio
 O fluxo de execução da pipeline de dados é linear e segue três etapas sequenciais, representadas da esquerda para a direita:
 
 1. **EXTRAÇÃO**:  
-   - **Objetivo**: Coletar dados brutos de fontes diversas (bancos de dados, APIs, logs, etc.).  
+   - **Objetivo**: Coletar dados brutos do TLC.  
    - **Saída**: Dados são armazenados na camada **RAW**, sem modificações, preservando a forma original.  
 
 2. **TRANSFORMAÇÃO**:  
