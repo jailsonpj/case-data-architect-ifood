@@ -145,9 +145,8 @@ A modelagem dimensional dos dados do TLC Trip Record Data, conforme apresentada 
   ```
 
 #### Configurando Ambiente para Consumo de Dados
-Para consumir os dados através do Databricks, é necessário fazer a execuçao do condigo do `config.py` para montar os caminhos do S3 Bucket no Databricks. A partir disso os dados podem ser consumidos. 
+Para consumir os dados através do Databricks, é necessário montar os caminhos para o S3 Bucket. Para isso, é necessário ter acesso ao `AWS_ACCESS_KEY` e `AWS_SECRET_KEY`. Com a classe `AuthenticationS3` desenvolvida voce pode ter acesso a essas credenciais executando localmente o código abaixo e copiando as credenciais:
 
-1. Execução para montar os caminhos do S3 Bucket:
 ```bash
 from authentication.authentication import AuthenticationS3
 import urllib
@@ -156,6 +155,14 @@ auth = eval(AuthenticationS3.get_secret_value())
 
 access_key = auth["user-dl-case-ifood"]
 secret_key = auth["secret-dl-case-ifood"]
+
+print(access_key, secret_key)
+```
+
+Despois de copiado as credenciais, o código abaixo pode ser executado no Databricks para aplicar a montagem do caminho do S3:
+
+```bash
+import urllib
 encoded_secret = urllib.parse.quote(string=secret_key, safe="")
 
 aws_s3_bucket_raw = "raw-tlc-trip-data-case-ifood"
@@ -171,7 +178,24 @@ mount_name_enriched = "/mnt/mount_enriched"
 source_url_enriched = "s3a://%s:%s@%s" %(access_key, encoded_secret, aws_s3_bucket_enriched)
 ```
 
-A partir disso os dados podem ser consumidos pelo Databricks.
+A partir disso os dados podem ser consumidos pelo Databricks em qualquer camada (Raw, Tranformed, Enriched).
+
+1. Exemplo de Leitura na camada Enriched:
+
+```bash
+def read_files_parquet(file_input):
+   df = spark.read.parquet(file_input)
+   return df
+
+color_taxi = "yellow"
+path_base_mount = "/mnt/mount_enriched/"
+path_s3_bucket = f"{color_taxi}_taxi/metrics/taxi_trip/*.parquet"
+
+df = read_files_parquet(path_base_mount + path_s3_bucket)
+```
+
+##### Consumir Dados S3 Local
+Para consumir os dados em uma máquina local, basta somente ter acesso as credenciais e ler os dados `parquet` com alguma biblioteca que tenha suporte a esse tipo de arquivo.
 
 ---
 
