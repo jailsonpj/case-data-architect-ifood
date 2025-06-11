@@ -145,7 +145,18 @@ A modelagem dimensional dos dados do TLC Trip Record Data, conforme apresentada 
   ```
 
 #### Configurando Ambiente para Consumo de Dados
-Para consumir os dados através do Databricks, é necessário montar os caminhos para o S3 Bucket. Para isso, é necessário ter acesso ao `AWS_ACCESS_KEY` e `AWS_SECRET_KEY`. Com a classe `AuthenticationS3` desenvolvida voce pode ter acesso a essas credenciais executando localmente o código abaixo e copiando as credenciais:
+Para acessar os dados armazenados no S3 Bucket através do Databricks, você precisará configurar os caminhos (paths) de acesso. Este processo requer as credenciais de segurança da AWS:
+
+1. Credenciais necessárias:
+   - `AWS_ACCESS_KEY`
+   - `AWS_SECRET_KEY`
+
+2. Obtenção das credenciais:
+   - Utilize a classe `AuthenticationS3` desenvolvida nessa solução
+   - Execute o código localmente para gerar as credenciais
+   - Copie as credenciais exibidas para uso no Databricks
+
+Exemplo de código para execução local:
 
 ```bash
 from authentication.authentication import AuthenticationS3
@@ -159,7 +170,7 @@ secret_key = auth["secret-dl-case-ifood"]
 print(access_key, secret_key)
 ```
 
-Despois de copiado as credenciais, o código abaixo pode ser executado no Databricks para aplicar a montagem do caminho do S3:
+Após obter as credenciais da AWS, execute o seguinte código no Databricks para configurar o acesso ao bucket S3:
 
 ```bash
 import urllib
