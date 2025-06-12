@@ -41,13 +41,23 @@ class EnrichedTLCData:
         logger.info("Iniciando enriquecimento de dados. Tipo: %s, Cor: %s, Meses: %d", 
                    enriched_type, color, months)
         
-        columns_select = [
+        columns_select_yellow = [
             "vendor_id", 
             "passenger_count",
             "total_amount",
             "tpep_pickup_datetime",
             "tpep_dropoff_datetime"
         ]
+
+        columns_select_green = [
+            "vendor_id", 
+            "passenger_count",
+            "total_amount",
+            "lpep_pickup_datetime",
+            "lpep_dropoff_datetime"
+        ]
+
+        columns_select = columns_select_green if color == "green" else columns_select_yellow
         logger.debug("Colunas selecionadas para enriquecimento: %s", columns_select)
 
         for month in range(1, months + 1):

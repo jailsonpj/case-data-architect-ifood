@@ -49,6 +49,8 @@ class TransformedTLCData:
             "VendorID": "integer",
             "tpep_pickup_datetime": "timestamp",
             "tpep_dropoff_datetime": "timestamp",
+            "lpep_pickup_datetime": "timestamp",
+            "lpep_dropoff_datetime": "timestamp",
             "passenger_count": "bigint",
             "trip_distance": "double",
             "RatecodeID": "integer",
@@ -100,6 +102,8 @@ class TransformedTLCData:
             'VendorID': 'vendor_id',
             'tpep_pickup_datetime': 'tpep_pickup_datetime',
             'tpep_dropoff_datetime': 'tpep_dropoff_datetime',
+            'lpep_pickup_datetime': 'lpep_pickup_datetime',
+            'lpep_dropoff_datetime': 'lpep_dropoff_datetime',
             'passenger_count': 'passenger_count',
             'trip_distance': 'trip_distance',
             'RatecodeID': 'rate_code_id',
@@ -199,6 +203,8 @@ class TransformedTLCData:
             logger.error("Invalid months parameter: %d", months)
             raise ValueError("Months must be between 1 and 12")
 
+        column_date = "lpep_dropoff_datetime" if color == "green" else "tpep_dropoff_datetime"
+
         for month in range(1, months + 1):
             try:
                 path = self.path_mount_raw + f"{color}_taxi/2023/{month}"
@@ -209,7 +215,7 @@ class TransformedTLCData:
 
                 df = self.convert_types_data(df)
                 df = self.standardize_column_names(df=df)
-                df = self.create_columns_date(df=df, column="tpep_dropoff_datetime")
+                df = self.create_columns_date(df=df, column=column_date)
 
                 df = df.filter(F.col("year") == 2023)
                 output_path = self.path_mount_transformed + f'{color}_taxi/2023/{month}'
