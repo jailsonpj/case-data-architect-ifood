@@ -102,8 +102,8 @@ class TransformedTLCData:
             'VendorID': 'vendor_id',
             'tpep_pickup_datetime': 'tpep_pickup_datetime',
             'tpep_dropoff_datetime': 'tpep_dropoff_datetime',
-            'lpep_pickup_datetime': 'lpep_pickup_datetime',
-            'lpep_dropoff_datetime': 'lpep_dropoff_datetime',
+            'lpep_pickup_datetime': 'tpep_pickup_datetime',
+            'lpep_dropoff_datetime': 'tpep_dropoff_datetime',
             'passenger_count': 'passenger_count',
             'trip_distance': 'trip_distance',
             'RatecodeID': 'rate_code_id',
@@ -119,7 +119,9 @@ class TransformedTLCData:
             'improvement_surcharge': 'improvement_surcharge',
             'total_amount': 'total_amount',
             'congestion_surcharge': 'congestion_surcharge',
-            'airport_fee': 'airport_fee'
+            'airport_fee': 'airport_fee',
+            'cbd_congestion_fee': 'cbd_congestion_fee',
+            'trip_type': 'trip_type'
         }
 
         renamed_columns = []
@@ -131,16 +133,7 @@ class TransformedTLCData:
         generic_renames = []
         for col_name in df.columns:
             if col_name not in column_mapping.values():
-                new_name = (
-                    col_name.lower()
-                    .replace(' ', '_')
-                    .replace('-', '_')
-                    .replace('(', '')
-                    .replace(')', '')
-                )
-                if new_name != col_name:
-                    df = df.withColumnRenamed(col_name, new_name)
-                    generic_renames.append((col_name, new_name))
+                df = df.drop(col_name)
 
         logger.info(
             "Renamed %d specific and %d generic columns",
@@ -174,6 +167,46 @@ class TransformedTLCData:
         logger.info("Created year/month/day columns from %s", column)
         return df
 
+    def filter_values_not_negative(self, df):
+        """
+        Process filter values not negative
+
+        Args:
+            df (pyspark.DataFrame): Data values taxi
+        
+        Returns:
+            df with values filtred.
+        """
+        df = df.filter(df["total_amount"] >= 0)
+        return df
+    
+    def filter_timestamp(self, df, column_date):
+        """
+        Process filter values window timestamp 
+
+        Args:
+            df (pyspark.DataFrame): Data values taxi
+            column_date (str): Name column to start filter
+        Returns:
+            df with values filtred.
+        """
+        df = df.filter(F.col(column_date) >= F.col("tpep_pickup_datetime"))
+        return df
+    
+    def create_column(self, df, name_column, color):
+        """
+        Process filter values window timestamp 
+
+        Args:
+            df (pyspark.DataFrame): Data values taxi
+            name_column (str): Name column create
+            color (str): Type color taxi
+        Returns:
+            df with values filtred.
+        """
+        df = df.withColumn(name_column, F.lit(color))
+        return df
+    
     def transformed_data(self, color="yellow", months=5):
         """Process taxi trip data by months.
 
@@ -203,7 +236,7 @@ class TransformedTLCData:
             logger.error("Invalid months parameter: %d", months)
             raise ValueError("Months must be between 1 and 12")
 
-        column_date = "lpep_dropoff_datetime" if color == "green" else "tpep_dropoff_datetime"
+        column_date = "tpep_dropoff_datetime"
 
         for month in range(1, months + 1):
             try:
@@ -218,6 +251,10 @@ class TransformedTLCData:
                 df = self.create_columns_date(df=df, column=column_date)
 
                 df = df.filter(F.col("year") == 2023)
+                df = self.filter_values_not_negative(df)
+                df = self.filter_timestamp(df, column_date)
+                df = self.create_column(df, "taxi_color_name", color)
+
                 output_path = self.path_mount_transformed + f'{color}_taxi/2023/{month}'
                 save_file_parquet(df, output_path)
                 logger.info(
