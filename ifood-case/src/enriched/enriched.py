@@ -41,7 +41,7 @@ class EnrichedTLCData:
         logger.info("Iniciando enriquecimento de dados. Tipo: %s, Cor: %s, Meses: %d", 
                    enriched_type, color, months)
         
-        columns_select_yellow = [
+        columns_select= [
             "vendor_id", 
             "passenger_count",
             "total_amount",
@@ -49,15 +49,6 @@ class EnrichedTLCData:
             "tpep_dropoff_datetime"
         ]
 
-        columns_select_green = [
-            "vendor_id", 
-            "passenger_count",
-            "total_amount",
-            "lpep_pickup_datetime",
-            "lpep_dropoff_datetime"
-        ]
-
-        columns_select = columns_select_green if color == "green" else columns_select_yellow
         logger.debug("Colunas selecionadas para enriquecimento: %s", columns_select)
 
         for month in range(1, months + 1):
@@ -72,7 +63,7 @@ class EnrichedTLCData:
                 logger.debug("Colunas selecionadas aplicadas. Schema atual: %s", df.schema)
                 
                 output_path = self.path_mount_enriched + f'{color}_taxi/{enriched_type}/taxi_trip'
-                save_file_parquet(df, output_path)
+                save_file_parquet(df, output_path, "append")
                 logger.info("Dados enriquecidos salvos com sucesso em: %s", output_path)
                 
             except Exception as e:

@@ -34,7 +34,7 @@ def read_files_parquet(file_input):
         raise
 
 
-def save_file_parquet(df, output_path):
+def save_file_parquet(df, output_path, mode="overwrite"):
     """Salva um DataFrame Spark no formato Parquet com partições por ano e mês.
     
     Args:
@@ -58,7 +58,7 @@ def save_file_parquet(df, output_path):
         
         (
             df.write
-            .mode("overwrite")
+            .mode(mode)
             .parquet(output_path)
         )
         
