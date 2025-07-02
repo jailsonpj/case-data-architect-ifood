@@ -49,6 +49,12 @@ Contém todo o código fonte do projeto, organizado em subdiretórios por funcio
 
 ![Arquitetura Data Lake](./ifood-case/src/images/arquitetura_datalake_teste_ifood.png)
 
+### Data Catálogo
+Na Proposta do Data Catálogo, foi utilizado o AWS Glue Catalog para fazer a integração das fontes de dados para catalaogação dos metadados. Como forma de mapear os metadados das fontes foi criado um servico de Crawler utilizando o próprio serviço da AWS.
+
+### Data Lake
+O Data Lake foi proposto seguindo o padrao de camadas. Onde elas são dividadidas em:
+
 - RAW (S3 Bucket):
     - Dados brutos originais da TLC 
     - Formato preservado como recebido
